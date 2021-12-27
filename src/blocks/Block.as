@@ -50,37 +50,40 @@ import uiwidgets.*;
 
 import util.*;
 
-public class Block extends Sprite {
+class Block extends Sprite {
+	const minCommandWidth = 36;
+	const minHatWidth = 80;
+	const minLoopWidth = 80;
 
-	private const minCommandWidth:int = 36;
-	private const minHatWidth:int = 80;
-	private const minLoopWidth:int = 80;
+	var argTextFormat;
+	var blockLabelFormat;
+	var vOffset;
 
-	public static var argTextFormat:TextFormat;
-	public static var blockLabelFormat:TextFormat;
-	private static var vOffset:int;
+//	const blockLabelFormat:TextFormat = new TextFormat('LucidaBoldEmbedded', 10, 0xFFFFFF, true);
+	var useEmbeddedFont = false;
 
-//	private static const blockLabelFormat:TextFormat = new TextFormat('LucidaBoldEmbedded', 10, 0xFFFFFF, true);
-	private static var useEmbeddedFont:Boolean = false;
+	var MenuHandlerFunction:Function;	// optional function to handle block and blockArg menus
 
-	public static var MenuHandlerFunction:Function;	// optional function to handle block and blockArg menus
+	var spec;
+	var type;
+	var op = "";
+	function opFunction() {
+	}
+	var args = [];
+	var defaultArgValues = [];
+	
+	var parameterIndex = -1;	// cache of parameter index, used by GET_PARAM block
+	var parameterNames = [];	// used by procedure definition hats; null for other blocks
+	var warpProcFlag = false;	// used by procedure definition hats to indicate warp speed
+	var rightToLeft = false;
 
-	public var spec:String;
-	public var type:String;
-	public var op:String = "";
-	public var opFunction:Function;
-	public var args:Array = [];
-	public var defaultArgValues:Array = [];
-	public var parameterIndex:int = -1;	// cache of parameter index, used by GET_PARAM block
-	public var parameterNames:Array;	// used by procedure definition hats; null for other blocks
-	public var warpProcFlag:Boolean;	// used by procedure definition hats to indicate warp speed
-	public var rightToLeft:Boolean;
-
-	public var isHat:Boolean = false;
-	public var isAsyncHat:Boolean = false;
-	public var isReporter:Boolean = false;
-	public var isTerminal:Boolean = false;	// blocks that end a stack like "stop" or "forever"
-
+	var isHat = false;
+	var isAsyncHat = false;
+	var isReporter = false;
+	var isTerminal = false;	// blocks that end a stack like "stop" or "forever"
+	
+	// Conversion in progress
+	
 	// Blocking operations
 	public var isRequester:Boolean = false;
 	public var forceAsync:Boolean = false;	// We've forced requester-like treatment on a non-requester block.
